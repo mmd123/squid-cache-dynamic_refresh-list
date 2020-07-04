@@ -68,6 +68,24 @@ refresh_pattern (get_video\?|videoplayback\?|videodownload\?|\.flv?) 129600 100%
 refresh_pattern (Release|Packages(.gz)*)$    0   20%  2880
 refresh_pattern (get_video\?|videoplayback\?|videodownload\?|\.flv?) 129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims
 refresh_pattern (get_video\?|videoplayback\?id|videoplayback.*id|videodownload\?|\.flv?) 129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims
+#new refresh patterns 2
+refresh_pattern -i (\.|-)(ini|def|sig|upt|mid|midi|mpg|mpeg|ram|cav|acc|alz|apk|at3|bke|arc|ass|ba|big|bik|bkf|bld|c4|cals|clipflair|cpt|daa|dmg|ddz|dpe|egg|egt|ecab|ess|esd|gho|ghs|gz|ipg|jar|lbr|lqr|lha|lz|lzo|lzma|lzx|mbw|mc.meta|mpq|nth|osz|pak|par|par2|paf|pyk|pk3|pk4|rag|sen|sitx|skb|tb|tib|uha|uue|viv|vsa|z|zoo|nrg|adf|adz|dms|dsk|d64|sdi|mds|mdx|cdi|cue|cif|c2d|daa|b6t)(\?.*)?$ 43200 100% 432000 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth
+#end new refresh patterns 2
+#new refresh patterns
+refresh_pattern -i (\.|-)(mp3|m4a|aa?c3?|wm?av?|og(x|v|a|g)|ape|mka|au|aiff|zip|flac|m4(b|r)|m1v|m2(v|p)|mo(d|v)|arj|appx|lha|lzh|on2)(\?.*)?$ 43200 100% 432000 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth
+refresh_pattern -i (\.|-)(exe|bin|(n|t)ar|acv|(r|j)ar|t?gz|(g|b)z(ip)?2?|7?z(ip)?|wm[v|a]|patch|diff|mar|vpu|inc|r(a|p)m|kom|iso|sys|[ap]sf|ms[i|u|f]|dat|msi|cab|psf|dvr-ms|ace|asx|qt|xt|esd)(\?.*)?$ 43200 100% 432000 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth
+refresh_pattern -i (\.|-)(ico(.*)?|pn[pg]|css|(g|t)iff?|jpe?g(2|3|4)?|psd|c(d|b)r|cad|bmp|img)(\?.*)?$ 43200 100% 432000 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth
+refresh_pattern -i (\.|-)(webm|(x-)?swf|mp(eg)?(3|4)|mpe?g(av)?|(x-)?f(l|4)v|divx?|rmvb?|mov|trp|ts|avi|m38u|wmv|wmp|m4v|mkv|asf|dv|vob|3gp?2?)(\?.*)?$ 43200 100% 432000 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth
+refresh_pattern -i (\.|-)(docx?|xlsx?|pptx?|rtf|xml|pdf|tiff?|txt)(\?.*)?$ 43200 100% 432000 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth
+refresh_pattern -i \.(3gp|7z|ace|asx|avi|bin|cab|dat|deb|rpm|divx|dvr-ms)      129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(rar|jar|gz|tgz|tar|bz2|iso|m1v|m2(v|p)|mo(d|v)|(x-|)flv) 129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(jp(e?g|e|2)|gif|pn[pg]|bm?|tiff?|ico|swf|css|js)         129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(mp(e?g|a|e|1|2|3|4)|mk(a|v)|ms(i|u|p))                   129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(og(x|v|a|g)|rar|rm|r(a|p)m|snd|vob|wav)                  129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(pp(s|t)|wax|wm(a|v)|wmx|wpl|zip|cb(r|z|t))               129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(doc|pdf)$           100080 90% 43200 override-expire ignore-no-cache ignore-no-store ignore-private reload-into-ims
+refresh_pattern -i \.(html|htm)$          1440   40% 40320 ignore-no-cache ignore-no-store ignore-private override-expire reload-into-ims
+refresh_pattern (Release|Packages(.gz)*)$    0   20%  2880
 
 
 
@@ -79,6 +97,31 @@ refresh_pattern (get_video\?|videoplayback\?id|videoplayback.*id|videodownload\?
 refresh_pattern -i \.(cdn) 10800 100% 43800 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-private # CDN CACHING
 refresh_pattern -i (cdn)   10800 100% 43800 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-private # CDN CACHING
 refresh_pattern -i (.|-)(xml|js|jsp|txt|css)(?.*)?$ 360 40% 1440 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth
+refresh_pattern (get_video\?|videoplayback\?|videodownload\?|\.flv?) 129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims
+refresh_pattern (get_video\?|videoplayback\?id|videoplayback.*id|videodownload\?|\.flv?) 129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims
+refresh_pattern ^.*(utm\.gif|ads\?|rmxads\.com|ad\.z5x\.net|bh\.contextweb\.com|bstats\.adbrite\.com|a1\.interclick\.com|ad\.trafficmp\.com|ads\.cubics\.com|ad\.xtendmedia\.com|\.googlesyndication\.com|advertising\.com|yieldmanager|game-advertising\.com|pixel\.quantserve\.com|adperium\.com|doubleclick\.net|adserving\.cpxinteractive\.com|syndication\.com|media.fastclick.net).* 129600 20% 129600 ignore-no-cache ignore-no-store ignore-private override-expire ignore-reload ignore-auth ignore-must-revalidate
+refresh_pattern ^.*safebrowsing.*google                                  129600 100% 129600 override-expire ignore-reload ignore-no-cache ignore-private ignore-auth ignore-must-revalidate
+refresh_pattern ^http://((cbk|mt|khm|mlt)[0-9]?)\.google\.co(m|\.uk)     129600 100% 129600 override-expire ignore-reload ignore-private
+refresh_pattern ytimg\.com.*\.jpg                                        129600 100% 129600 override-expire ignore-reload
+refresh_pattern images\.friendster\.com.*\.(png|gif)                     129600 100% 129600 override-expire ignore-reload
+refresh_pattern garena\.com                                              129600 100% 129600 override-expire reload-into-ims
+refresh_pattern photobucket.*\.(jp(e?g|e|2)|tiff?|bmp|gif|png)           129600 100% 129600 override-expire ignore-reload
+refresh_pattern vid\.akm\.dailymotion\.com.*\.on2\?                      129600 100% 129600 ignore-no-cache override-expire override-lastmod
+refresh_pattern mediafire.com\/images.*\.(jp(e?g|e|2)|tiff?|bmp|gif|png) 129600 100% 129600 reload-into-ims override-expire ignore-private
+refresh_pattern ^http:\/\/images|pics|thumbs[0-9]\.                      129600 100% 129600 reload-into-ims ignore-no-cache ignore-no-store ignore-reload override-expire
+refresh_pattern ^http:\/\/www.onemanga.com.*\/                           129600 100% 129600 reload-into-ims ignore-no-cache ignore-no-store ignore-reload override-expire
+
+
+# ANTI VIRUS
+refresh_pattern guru.avg.com/.*\.(bin)                              43200 100% 43200  ignore-no-cache ignore-no-store ignore-reload reload-into-ims
+refresh_pattern (avgate|avira).*(idx|gz)$                           43200 100% 43200  ignore-no-cache ignore-no-store ignore-reload reload-into-ims
+refresh_pattern kaspersky.*\.avc$                                   43200 100% 43200  ignore-no-cache ignore-no-store ignore-reload reload-into-ims
+refresh_pattern kaspersky                                           43200 100% 43200  ignore-no-cache ignore-no-store ignore-reload reload-into-ims
+refresh_pattern update.nai.com/.*\.(gem|zip|mcs)                    43200 100% 43200  ignore-no-cache ignore-no-store ignore-reload reload-into-ims
+refresh_pattern ^http:\/\/liveupdate.symantecliveupdate.com.*\(zip) 43200 100% 43200  ignore-no-cache ignore-no-store ignore-reload reload-into-ims
+refresh_pattern -i symantecliveupdate.com/.*\.(zip|exe)             43200 100% 43200 reload-into-ims
+refresh_pattern -i avast.com/.*\.(vpu|vpaa) 4320 100% 43200 reload-into-ims
+refresh_pattern -i avira-update.com/.*\.* 720 100% 10800 reload-into-ims
 
 
 
@@ -133,6 +176,23 @@ refresh_pattern ^http://*.gmail.*/.* 720 100% 4320 # GMAIL
 refresh_pattern ^http://*.google.*/.* 720 100% 4320 # GOOGLE
 
 
+#banner IIX
+refresh_pattern ^http:\/\/openx.*\.(jp(e?g|e|2)|gif|pn[pg]|swf|ico|css|tiff?) 129600 100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern ^http:\/\/ads(1|2|3).kompas.com.*\/                           43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern ^http:\/\/img.ads.kompas.com.*\/                              43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern .kompasimages.com.*\.(jpg|gif|png|swf)                        43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern ^http:\/\/openx.kompas.com.*\/                                43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern kaskus.\us.*\.(jp(e?g|e|2)|gif|png|swf)                       43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern ^http:\/\/img.kaskus.us.*\.(jpg|gif|png|swf)                  43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+
+
+#IIX DOWNLOAD
+refresh_pattern ^http:\/\/\.www[0-9][0-9]\.indowebster\.com\/(.*)(mp3|rar|zip|flv|wmv|3gp|mp(4|3)|exe|msi|zip) 43200 100% 129600 reload-into-ims  ignore-reload override-expire ignore-no-cache ignore-no-store  ignore-auth
+
+refresh_pattern -i ^http://(khm?)([^/]*?)\.google\.(de|com)     129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+
+refresh_pattern -i ^http://ecn\.t\d\.tiles\.virtualearth\.net/tiles/\w*\.jpeg     129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+
 
 #HULU
 
@@ -172,7 +232,6 @@ refresh_pattern update.microsoft.com/.*\.(cab|exe|dll|msi|psf) 10080 100% 43200 
 refresh_pattern windowsupdate.com/.*\.(cab|exe|dll|msi|psf) 10080 100% 43200 reload-into-ims
 refresh_pattern download.microsoft.com/.*\.(cab|exe|dll|msi|psf) 10080 100% 43200 reload-into-ims
 refresh_pattern www.microsoft.com/.*\.(cab|exe|dll|msi|psf) 10080 100% 43200 reload-into-ims
-
 refresh_pattern au.download.windowsupdate.com/.*\.(cab|exe|dll|msi|psf) 4320 100% 43200 reload-into-ims
 refresh_pattern bg.v4.pr.dl.ws.microsoft.com/.*\.(cab|exe|dll|msi|psf) 4320 100% 43200 reload-into-ims
 refresh_pattern -i .*windowsupdate.com/.*\.(cab|exe)                     259200 100% 259200 ignore-no-store ignore-reload reload-into-ims
@@ -183,6 +242,14 @@ refresh_pattern -i \.update.microsoft.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|
 refresh_pattern -i \.windowsupdate.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip) 525600 100% 525600 reload-into-ims ignore-reload override-expire override-lastmod ignore-no-store ignore-private ignore-auth
 refresh_pattern -i \.download.microsoft.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip) 525600 100% 525600 reload-into-ims ignore-reload override-expire override-lastmod ignore-no-store ignore-private ignore-auth
 refresh_pattern -i \.ws.microsoft.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip) 525600 100% 525600 reload-into-ims ignore-reload override-expire override-lastmod ignore-no-store ignore-private ignore-auth
+#new refresh patterns 3
+acl Windows_Update dstdomain windowsupdate.microsoft.com
+acl Windows_Update dstdomain .update.microsoft.com
+acl Windows_Update dstdomain download.windowsupdate.com
+acl Windows_Update dstdomain www.download.windowsupdate.com
+acl Windows_Update dstdomain au.download.windowsupdate.com
+acl Windows_Update dstdomain bg.v4.pr.dl.ws.microsoft.com
+
 
 
 
@@ -214,6 +281,16 @@ refresh_pattern (/cgi-bin/|?) 0 0% 0 #CGI CACHING
 refresh_pattern ^ftp: 1440 20% 10080 #FTP PROTOCOL
 #refresh_pattern ^gopher: 1440 0% 1440 WHAT EVEN IS GOPHER??
 refresh_pattern -i \.cs.steampowered.com 525600 100% 525600 reload-into-ims ignore-reload override-expire override-lastmod ignore-no-store ignore-private ignore-auth # STEAM
+refresh_pattern ^gopher:  1440  0%  1440
+refresh_pattern ^ftp:    10080 95% 43200 override-lastmod reload-into-ims
+
+#Website
+refresh_pattern -i (\.|-)(xml|js|jsp|txt|css)(\?.*)?$ 360 40% 1440 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth
+refresh_pattern -i .index.(html|htm)$ 0 40% 1440
+refresh_pattern . 30 25% 1440
+#end new refresh patterns
+refresh_pattern -i (/cgi-bin/|\?)         0      0%      0
+refresh_pattern \.(ico|video-stats)$ 129600 100% 129600 override-expire ignore-reload ignore-no-cache ignore-no-store ignore-private ignore-auth override-lastmod ignore-must-revalidate
 
 
 #photobucket
@@ -232,7 +309,11 @@ refresh_pattern mediafire.com\/images.*\.(jp(e?g|e|2)|tiff?|bmp|gif|png) 129600 
 
 refresh_pattern ^http:\/\/images|pics|thumbs[0-9]\.                      129600 100% 129600 reload-into-ims ignore-no-cache ignore-no-store ignore-reload override-expire
 
+#IMEEM
+refresh_pattern imeem.*\.flv$                           0     0%         0 override-lastmod override-expire
 
+#RAPIDSHARE
+refresh_pattern \.rapidshare.*\/[0-9]*\/.*\/[^\/]* 161280    90%    161280 ignore-reload
 
 
 
@@ -241,6 +322,7 @@ refresh_pattern ^http:\/\/images|pics|thumbs[0-9]\.                      129600 
 #catch all
 
 refresh_pattern . 360 90% 1440 override-lastmod reload-into-ims
+refresh_pattern .                          180   95% 43200 override-lastmod reload-into-ims
 
 
 # USEFUL COMMANDS TO ADD TO MAKE SURE SHITS CACHED
