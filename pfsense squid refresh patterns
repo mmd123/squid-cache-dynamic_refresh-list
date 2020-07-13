@@ -255,11 +255,11 @@ acl Windows_Update dstdomain bg.v4.pr.dl.ws.microsoft.com
 
 #nvidia updates 
 
-refresh_pattern -i download.nvidia.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip) 4320 80% 432000 reload-into-ims 
-refresh_pattern -i international-gfe.download.nvidia.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip) 4320 80% 432000 reload-into-ims 
-refresh_pattern -i international-gfe.download.nvidia.com.global.ogslb.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip) 4320 80% 432000 reload-into-ims 
-
-
+refresh_pattern -i download.nvidia.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip)   43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern -i international-gfe.download.nvidia.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip)   43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern -i international-gfe.download.nvidia.com.global.ogslb.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip)   43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern -i international-gfe.download.nvidia.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip)   43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
+refresh_pattern -i download.nvidia.com/.*\.(cab|exe|ms[i|u|f]|[ap]sf|wm[v|a]|dat|zip)   43200  100% 129600 reload-into-ims ignore-reload override-expire ignore-no-cache ignore-no-store
 
 #APPLE STUFF
 
