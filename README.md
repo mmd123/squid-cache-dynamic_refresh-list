@@ -10,3 +10,14 @@ Clear Disk Cache NOW or else you may get issues (You must do this everytime you 
 In Dynamic and Update Content enable Cache Dynamic Content  
 Under Custom refresh_patterns paste in the refresh_patterns  
 Save 
+
+Sometimes the squid cache has to be reset if you have errors.
+https://docs.netgate.com/pfsense/en/latest/troubleshooting/squid.html
+
+squid -k shutdown
+rm -rf /var/squid/cache
+squid -z
+squid
+squid -k parse (look to see if there are errors in the custom refresh_patterns).
+
+Note: Normally https content cannot be cache because the content is encrypted and therefore cannot be cached. You can try and cache https content using ssl a man in the middle attack however you may get connection issues.
