@@ -88,6 +88,7 @@ refresh_pattern ^http:\/\/liveupdate.symantecliveupdate.com.*\(zip) 43200 100% 4
 refresh_pattern -i symantecliveupdate.com/.*\.(zip|exe)             43200 100% 43200 
 refresh_pattern -i avast.com/.*\.(vpu|vpaa) 4320 100% 43200 
 refresh_pattern -i avira-update.com/.*\.* 720 100% 10800 
+refresh_pattern -i download.iobit.com/.*\.* 720 100% 10800 
 
 # SITE SPECIFIC CACHING
 
@@ -183,12 +184,10 @@ refresh_pattern -i appldnld\.apple\.com 129600 100% 129600
 refresh_pattern -i phobos\.apple\.com 129600 100% 129600     
 refresh_pattern -i iosapps\.itunes\.apple\.com 129600 100% 129600     
 
-#GENERIC SITES/PROTOCOLS
-refresh_pattern -i (/cgi-bin/\?) 0 0% 0 #CGI CACHING
-refresh_pattern ^ftp: 1440 20% 10080 #FTP PROTOCOL
-refresh_pattern -i \.cs.steampowered.com 525600 100% 525600        # STEAM
+#GENERIC SITES/PROTOCOLS												
+refresh_pattern ^ftp: 1440 20% 10080 																		  
 refresh_pattern ^gopher:  1440  0%  1440
-refresh_pattern ^ftp:    10080 95% 43200  
+refresh_pattern -i (/cgi-bin/\?) 0 0% 0
 
 #Website
 refresh_pattern -i (\.|-)(xml|js|jsp|txt|css)(\?.*)?$ 360 40% 1440        
@@ -214,6 +213,72 @@ refresh_pattern imeem.*\.flv$                           0     0%         0
 
 #RAPIDSHARE
 refresh_pattern \.rapidshare.*\/[0-9]*\/.*\/[^\/]* 161280    90%    161280 
+
+#STEAM
+refresh_pattern -i \.cs.steampowered.com 525600 100% 525600
+refresh_pattern -i cs.steampowered.com 525600 100% 525600
+refresh_pattern -i content1.steampowered.com 525600 100% 525600
+refresh_pattern -i content2.steampowered.com 525600 100% 525600 
+refresh_pattern -i content3.steampowered.com 525600 100% 525600 
+refresh_pattern -i content4.steampowered.com 525600 100% 525600
+refresh_pattern -i content5.steampowered.com 525600 100% 525600 
+refresh_pattern -i content6.steampowered.com 525600 100% 525600 
+refresh_pattern -i content7.steampowered.com 525600 100% 525600
+refresh_pattern -i content8.steampowered.com 525600 100% 525600 
+refresh_pattern -i \.hsar.steampowered.com.edgesuite.net 525600 100% 525600
+refresh_pattern -i \.akamai.steamstatic.com 525600 100% 525600 
+refresh_pattern -i content-origin.steampowered.com 525600 100% 525600
+refresh_pattern -i client-download.steampowered.com 525600 100% 525600 
+refresh_pattern -i \.steamcontent.com 525600 100% 525600
+refresh_pattern -i steamcontent.com 525600 100% 525600
+refresh_pattern -i \.edgecast.steamstatic.com 525600 100% 525600 
+refresh_pattern -i \.steampipe.akamaized.net 525600 100% 525600
+refresh_pattern -i steam.cdn.on.net 525600 100% 525600
+
+#EPIC GAMES
+refresh_pattern -i epicgames-download1.akamaized.net 525600 100% 525600
+
+# riot
+refresh_pattern -i lancache-riot 525600 100% 525600
+refresh_pattern -i l3cdn.riotgames.com 525600 100% 525600
+refresh_pattern -i worldwide.l3cdn.riotgames.com 525600 100% 525600
+
+# blizzard
+refresh_pattern -i lancache-blizzard 525600 100% 525600
+refresh_pattern -i dist.blizzard.com.edgesuite.net 525600 100% 525600
+refresh_pattern -i llnw.blizzard.com 525600 100% 525600
+refresh_pattern -i dist.blizzard.com 525600 100% 525600
+refresh_pattern -i blizzard.vo.llnwd.net 525600 100% 525600
+
+# hirez
+refresh_pattern -i lancache-hirez 525600 100% 525600
+refresh_pattern -i hirez.http.internapcdn.net 525600 100% 525600
+
+# origin
+refresh_pattern -i lancache-origin 525600 100% 525600
+refresh_pattern -i akamai.cdn.ea.com 525600 100% 525600
+refresh_pattern -i lvlt.cdn.ea.com 525600 100% 525600
+
+# sony
+refresh_pattern -i lancache-sony 525600 100% 525600
+refresh_pattern -i pls.patch.station.sony.com 525600 100% 525600
+
+# turbine
+refresh_pattern -i lancache-turbine 525600 100% 525600
+refresh_pattern -i download.ic.akamai.turbine.com 525600 100% 525600
+refresh_pattern -i launcher.infinitecrisis.com 525600 100% 525600
+
+# microsoft Games
+refresh_pattern -i lancache-microsoft 525600 100% 525600
+refresh_pattern -i \.download.windowsupdate.com 525600 100% 525600
+refresh_pattern -i download.windowsupdate.com 525600 100% 525600
+refresh_pattern -i dlassets.xboxlive.com 525600 100% 525600
+refresh_pattern -i \.xboxone.loris.llnwd.net 525600 100% 525600
+refresh_pattern -i xboxone.vo.llnwd.net 525600 100% 525600
+refresh_pattern -i images-eds.xboxlive.com 525600 100% 525600
+refresh_pattern -i xbox-mbr.xboxlive.com 525600 100% 525600
+refresh_pattern -i assets1.xboxlive.com.nsatc.net 525600 100% 525600
+refresh_pattern -i assets1.xboxlive.com 525600 100% 525600
 
 #catch all
 refresh_pattern . 360 90% 1440  
