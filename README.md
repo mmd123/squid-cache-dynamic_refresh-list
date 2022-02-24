@@ -21,8 +21,6 @@ rm -rf /var/squid/cache
 
 squid -z
 
-squid
-
 squid -k parse (look to see if there are errors in the custom refresh_patterns).
 ```
 Note: Normally https content cannot be cache because the content is encrypted and therefore cannot be cached. You can try and cache https content using ssl a man in the middle attack however you may get connection issues.
