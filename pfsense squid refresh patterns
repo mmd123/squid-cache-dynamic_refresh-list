@@ -191,7 +191,7 @@ refresh_pattern -i (/cgi-bin/\?) 0 0% 0
 
 #Website
 refresh_pattern -i (\.|-)(xml|js|jsp|txt|css)(\?.*)?$ 360 40% 1440        
-refresh_pattern . 30 25% 1440
+refresh_pattern . 0 20% 4320
 #end new refresh patterns
 refresh_pattern -i (/cgi-bin/|\?)         0      0%      0
 refresh_pattern \.(ico|video-stats)$ 129600 100% 129600        
@@ -279,7 +279,3 @@ refresh_pattern -i images-eds.xboxlive.com 525600 100% 525600
 refresh_pattern -i xbox-mbr.xboxlive.com 525600 100% 525600
 refresh_pattern -i assets1.xboxlive.com.nsatc.net 525600 100% 525600
 refresh_pattern -i assets1.xboxlive.com 525600 100% 525600
-
-#catch all
-#refresh_pattern . 360 90% 1440  
-#refresh_pattern .                          180   95% 43200
