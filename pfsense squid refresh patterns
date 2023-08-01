@@ -130,7 +130,7 @@ refresh_pattern ^http:\/\/ads(1|2|3).kompas.com.*\/                           43
 refresh_pattern ^http:\/\/img.ads.kompas.com.*\/                              43200  100% 129600     
 refresh_pattern .kompasimages.com.*\.(jpg|gif|png|swf)                        43200  100% 129600     
 refresh_pattern ^http:\/\/openx.kompas.com.*\/                                43200  100% 129600     
-refresh_pattern kaskus.\us.*\.(jp(e?g|e|2)|gif|png|swf)                       43200  100% 129600     
+refresh_pattern kaskus.us.*\.(jp(e?g|e|2)|gif|png|swf)                        43200  100% 129600     
 refresh_pattern ^http:\/\/img.kaskus.us.*\.(jpg|gif|png|swf)                  43200  100% 129600     
 
 #IIX DOWNLOAD
