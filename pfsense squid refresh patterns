@@ -111,7 +111,7 @@ refresh_pattern static.(xx|ak).fbcdn.net.(jpg|gif|png) 241920 99% 241920
 refresh_pattern ^https?://profile.ak.fbcdn.net*.(jpg|gif|png) 241920 99% 241920
 
 #FACEBOOK VIDEO
-refresh_pattern -i .video.ak.fbcdn.net.*.(mp4|flv|mp3|amf)                    10080 80% 43200      
+refresh_pattern -i .(video-lax\d\-\d\.xx|video\.ak)\.fbcdn.net.*\.(mp4|flv|mp3|amf) 10080 80% 43200 10080 80% 43200      
 refresh_pattern (audio|video)/(webm|mp4) 129600 99% 129600         store-stale
 refresh_pattern -i ^http://.squid.internal.  241920 100% 241920        store-stale
 
