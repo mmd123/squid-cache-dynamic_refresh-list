@@ -15,18 +15,17 @@ refresh_pattern -i (mbamupdates.com) 1440 60% 10080
 refresh_pattern -i \.(3gp|7z|ace|asx|avi|bin|cab|dat|deb|rpm|divx|dvr-ms)(\?|$) 43800 100% 129600        # 3GP | 7Z | ACE | ASX | AVI | BIN | CAB | DAT | DEB | RPM | DIVX | DVR-MS
 refresh_pattern -i \.(rar|jar|gz|tgz|tar|bz2|iso)(\?|$)                         43800 100% 129600        # RAR | JAR | GZ | TGZ | TAR | BZ2 | ISO
 refresh_pattern -i \.(m1v|M2V|M2P|MOD|MOV|FLV)(\?|$)                       43800 100% 129600        # M1V | M2V | M2P | MOD | MOV | FLV
-refresh_pattern -i \.(jp(e?g|e|2)|gif|pn[pg]|bm?|tiff?|ico|swf|css|js)(\?|$)           43800 100% 129600        # JPG | JPEG | JPE | JP2 | GIF | PNG | BMP | TIFF | ICO | SWF
+refresh_pattern -i \.(jp(e?g|e|2)|gif|pn[pg]|bm?|tiff?|ico|swf|css)(\?|$)           43800 100% 129600        # JPG | JPEG | JPE | JP2 | GIF | PNG | BMP | TIFF | ICO | SWF
 refresh_pattern -i \.(mp(e?g|a|e|1|2|3|4)|mk(a|v)|ms(i|u|p))(\?|$)              43800 100% 129600        # MPEG STYLE CACHING, VIDEO AND MUSIC | MPG MPEG | MP1-2-3-4 | MK-A/V | MS-I-U-P
 refresh_pattern -i \.(og(x|v|a|g)|rar|rm|r(a|p)m|snd|vob|wav)(\?|$)             43800 100% 129600        # OGX | OGV | OGA | OGG | RAR | RM | RAM | RPM | SND | VOB | WAV
 refresh_pattern -i \.(pp(s|t)|wax|wm(a|v)|wmx|wpl|zip|cb(r|z|t))(\?|$)          43800 100% 129600        # PPS | PPT | WAX | WMA | WMV | WMX | WPL | ZIP | CBR | CBZ | CBT
 refresh_pattern -i \.(woff|txt|exe|dmg|webm)(\?|$)                              43800 100% 129600        # WOFF | TXT | EXE | DMG | WEBM
 refresh_pattern -i \.(css)(\?|$)                                                10080  60% 43800         # CSS
-refresh_pattern -i \.(js)(\?|$)                                                 10080  60% 10080         # JS
+refresh_pattern -i (.|-)(xml|js|jsp|txt|css|swf|html|htm|txt|gif|tiff)(?.*)?$ 360 80% 1440              # JS
 refresh_pattern -i \.(doc|pdf)(\?|$)  10080 90% 43200      # DOC | PDF
 refresh_pattern -i \.(html|htm)(\?|$) 1440  60% 10080      # HTML | HTM
 refresh_pattern -i .(iso|avi|wav|mp3|mp4|mpeg|swf|flv|x-flv)$ 43200 90% 432000     #THIS SHOULD BE DOCUMENTED/DONE ABOVE, BUT LEAVING HERE JUST IN CASE
 refresh_pattern -i .(deb|rpm|exe|zip|tar|tgz|ram|rar|bin|ppt|doc|docx|tiff)$ 10080 90% 43200     # DEB | RPM | EXE | ZIP | TAR | TGZ | RAM | RAR | BIN | PPT | DOC | TIFF | DOCX
-refresh_pattern -i .(html|htm|css|js)$ 1440 40% 40320     
 refresh_pattern -i .index.(html|htm)$ 0 40% 10080     
 refresh_pattern -i .(ppt|pptx|doc|docx|docm|docb|dot|pdf|pub|ps)$ 100000 90% 200000     refresh-ims
 refresh_pattern -i .(xls|xlsx|xlt|xlm|xlsm|xltm|xlw|csv|txt)$ 100000 90% 200000     refresh-ims
@@ -39,7 +38,6 @@ refresh_pattern -i .(json)$ 0 90% 200000 refresh-ims
 refresh_pattern -i .(asx|mp2|mp3|mp4|mp5|wmv|flv|mts|f4v|f4|pls|midi|mid)$ 100000 90% 200000     refresh-ims
 refresh_pattern -i .(mpa|m2a|mpe|avi|mov|mpg|mpeg|mpg3|mpg4|mpg5)$ 100000 90% 200000     refresh-ims
 refresh_pattern -i .(m1s|mp2v|m2v|m2s|m2ts|mp2t|wmx|rm|rmvb|3pg|3gpp|omg|ogm|asf|war)$ 100000 90% 200000     refresh-ims
-refresh_pattern -i .(swf|js|ejs)$ 100000 90% 200000     refresh-ims
 refresh_pattern -i .(wav|css|class|dat|zsci|ver|advcs)$ 100000 90% 200000     refresh-ims
 refresh_pattern -i .(gif|png|ico|jpg|jpeg|jp2|webp)$ 100000 90% 200000     refresh-ims
 refresh_pattern -i .(jpx|j2k|j2c|fpx|bmp|tif|tiff|bif)$ 100000 90% 20000     refresh-ims
@@ -67,7 +65,6 @@ refresh_pattern (Release|Packages(.gz)*)$    0   20%  2880
 # GENERIC CACHING BELOW
 refresh_pattern -i \.(cdn) 10800 100% 43800       # CDN CACHING
 refresh_pattern -i (cdn)   10800 100% 43800       # CDN CACHING
-refresh_pattern -i (.|-)(xml|js|jsp|txt|css)?$ 360 40% 1440        
 refresh_pattern (get_video\?|videoplayback\?|videodownload\?|\.flv?) 129600 100% 129600      
 refresh_pattern (get_video\?|videoplayback\?id|videoplayback.*id|videodownload\?|\.flv?) 129600 100% 129600      
 refresh_pattern ^.*(utm\.gif|ads\?|rmxads\.com|ad\.z5x\.net|bh\.contextweb\.com|bstats\.adbrite\.com|a1\.interclick\.com|ad\.trafficmp\.com|ads\.cubics\.com|ad\.xtendmedia\.com|\.googlesyndication\.com|advertising\.com|yieldmanager|game-advertising\.com|pixel\.quantserve\.com|adperium\.com|doubleclick\.net|adserving\.cpxinteractive\.com|syndication\.com|media.fastclick.net).* 129600 20% 129600       
@@ -189,9 +186,7 @@ refresh_pattern ^ftp: 1440 20% 10080
 refresh_pattern ^gopher:  1440  0%  1440
 refresh_pattern -i (/cgi-bin/\?) 0 0% 0
 
-#Website
-refresh_pattern -i (\.|-)(xml|js|jsp|txt|css)(\?.*)?$ 360 40% 1440        
-#end new refresh patterns
+
 refresh_pattern -i (/cgi-bin/|\?)         0      0%      0
 refresh_pattern \.(ico|video-stats)$ 129600 100% 129600        
 
