@@ -1,4 +1,9 @@
 When doing squid -k parse there are some old squid errors in the squid.conf file in /usr/local/etc/squid/squid.conf here is how to fix them.
+Before editing the squid.conf make a backup e.g cp squid.conf squid.confBACKUP
+Edit the file using vi
 1. Update cafile to tls-cafile e.g cafile=/usr/local/share/certs/ca-root-nss.crt to tls-cafile=/usr/local/share/certs/ca-root-nss.crt
 2. Find remove SINGLE_DH_USE and SINGLE_ECDH_USE
 3. Delete or comment out the line containing dns_v4_first off/on
+wq
+restart squid
+and use squid -k to check for errors 
