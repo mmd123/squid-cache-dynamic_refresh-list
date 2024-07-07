@@ -21,7 +21,8 @@ refresh_pattern -i \.(og(x|v|a|g)|rar|rm|r(a|p)m|snd|vob|wav)(\?|$)             
 refresh_pattern -i \.(pp(s|t)|wax|wm(a|v)|wmx|wpl|zip|cb(r|z|t))(\?|$)          43800 100% 129600        # PPS | PPT | WAX | WMA | WMV | WMX | WPL | ZIP | CBR | CBZ | CBT
 refresh_pattern -i \.(woff|txt|exe|dmg|webm)(\?|$)                              43800 100% 129600        # WOFF | TXT | EXE | DMG | WEBM
 refresh_pattern -i \.(css)(\?|$)                                                10080  60% 43800         # CSS
-refresh_pattern -i (.|-)(xml|js|jsp|txt|css|swf|html|htm|txt|gif|tiff)(?.*)?$ 360 80% 1440              # JS
+refresh_pattern -i \.(xml|js|jsp|txt|css|swf|html|htm|gif|tiff)(\?.*)?$ 360 80% 1440
+
 refresh_pattern -i \.(doc|pdf)(\?|$)  10080 90% 43200      # DOC | PDF
 refresh_pattern -i \.(html|htm)(\?|$) 1440  60% 10080      # HTML | HTM
 refresh_pattern -i .(iso|avi|wav|mp3|mp4|mpeg|swf|flv|x-flv)$ 43200 90% 432000     #THIS SHOULD BE DOCUMENTED/DONE ABOVE, BUT LEAVING HERE JUST IN CASE
@@ -108,7 +109,8 @@ refresh_pattern static.(xx|ak).fbcdn.net.(jpg|gif|png) 241920 99% 241920
 refresh_pattern ^https?://profile.ak.fbcdn.net*.(jpg|gif|png) 241920 99% 241920
 
 #FACEBOOK VIDEO
-refresh_pattern -i .(video-lax\d\-\d\.xx|video\.ak)\.fbcdn.net.*\.(mp4|flv|mp3|amf) 10080 80% 43200 10080 80% 43200      
+#refresh_pattern -i \.(video\.ak)\.fbcdn\.net.*\.(mp4|flv) 10080 80% 43200
+refresh_pattern -i \.(video-lax[0-9]-[0-9]\.xx|video\.ak)\.fbcdn\.net.*\.(mp4|flv|mp3|amf) 10080 80% 43200
 refresh_pattern (audio|video)/(webm|mp4) 129600 99% 129600         store-stale
 refresh_pattern -i ^http://.squid.internal.  241920 100% 241920        store-stale
 
