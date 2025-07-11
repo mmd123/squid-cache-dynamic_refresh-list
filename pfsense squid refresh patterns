@@ -177,11 +177,11 @@ client_lifetime 15 minutes
 pconn_lifetime 5 minutes
 # ---- SOFTWARE UPDATES ----
 # Microsoft Windows Updates, Office 365, Defender, and common update files
-refresh_pattern -i (download\.microsoft\.com|update\.microsoft\.com|windowsupdate\.com|windows\.com|officecdn\.microsoft\.com|officecdn\.microsoftonline\.com|officeclient\.officeapps\.live\.com|akamaiedge\.net|download\.windowsupdate\.com|download\.windowsupdate\.com\.msedge\.net|wustat\.windows\.com|microsoftedge\.com|edgecastcdn\.net|azureedge\.net)/.*\.(cab|exe|msi|msu|msf|psf|zip|dat|mum|manifest|manifest\.xml|json|cat|xml) 4320 80% 43200 reload-into-ims
+refresh_pattern -i (download\.microsoft\.com|update\.microsoft\.com|windowsupdate\.com|windows\.com|officecdn\.microsoft\.com|officecdn\.microsoftonline\.com|officeclient\.officeapps\.live\.com|akamaiedge\.net|download\.windowsupdate\.com|download\.windowsupdate\.com\.msedge\.net|wustat\.windows\.com|microsoftedge\.com|edgecastcdn\.net|azureedge\.net)/.*\.(cab|exe|msi|msu|msf|psf|zip|dat|mum|manifest|manifest\.xml|json|cat|xml) 4320 80% 43200 
 # Microsoft Store app updates and edge CDN domains
-refresh_pattern -i (storeedge\.fd\.dsp\.ms|storeedgefd\.azureedge\.net|dl\.delivery\.mp\.microsoft\.com)/.*\.(appx|appxbundle|msixbundle|msix|eappx) 4320 80% 43200 reload-into-ims
+refresh_pattern -i (storeedge\.fd\.dsp\.ms|storeedgefd\.azureedge\.net|dl\.delivery\.mp\.microsoft\.com)/.*\.(appx|appxbundle|msixbundle|msix|eappx) 4320 80% 43200 
 # Microsoft telemetry and diagnostics domains - do NOT cache
-refresh_pattern -i (telemetry\.microsoft\.com|vortex\.data\.microsoft\.com|watson\.telemetry\.microsoft\.com|settings\.win\.microsoft\.com|watson\.microsoft\.com|feedback\.microsoft\.com|sqm\.users\.office\.com|compatexchange\.cloudapp\.net|diagnostics\.support\.microsoft\.com|telemetry\.office\.com|telemetry\.cdn\.microsoft\.com|.*\.cdn\.microsoft\.com\/telemetry|mobile\.settings\.windows\.com|sqm\.telemetry\.microsoft\.com|ntservicepacks\.blob\.core\.windows\.net)/ 0 0% 0 reload-into-ims
+refresh_pattern -i (telemetry\.microsoft\.com|vortex\.data\.microsoft\.com|watson\.telemetry\.microsoft\.com|settings\.win\.microsoft\.com|watson\.microsoft\.com|feedback\.microsoft\.com|sqm\.users\.office\.com|compatexchange\.cloudapp\.net|diagnostics\.support\.microsoft\.com|telemetry\.office\.com|telemetry\.cdn\.microsoft\.com|.*\.cdn\.microsoft\.com\/telemetry|mobile\.settings\.windows\.com|sqm\.telemetry\.microsoft\.com|ntservicepacks\.blob\.core\.windows\.net)/ 0 0% 0 
 # --- Block caching for login URLs ---
 acl https_login url_regex -i login(\.php|\.aspx|\.html|\/|$)
 cache deny https_login
