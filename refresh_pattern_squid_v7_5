@@ -1,0 +1,425 @@
+# ========================================================================
+# SQUID 7.5 REFRESH PATTERNS (COMPREHENSIVE) 1.00
+# ========================================================================
+#
+# WHAT THIS FILE IS FOR:
+# This set of refresh patterns tells Squid how long it may consider cached
+# objects "fresh" before it should revalidate them, and which classes of
+# content should be cached aggressively, cached briefly, or not cached at all.
+#
+# WHY THIS MATTERS:
+# - Vendor update files are often large, repetitive, and safe to cache.
+# - Dynamic pages, telemetry, ads, and login content should not be cached.
+# - Correct ordering is essential because Squid uses the first matching rule.
+#
+# HOW TO READ A refresh_pattern LINE:
+# refresh_pattern [-i] regex   min   percent   max   [options]
+#
+# - -i       = case-insensitive matching
+# - regex    = what Squid matches against the URL
+# - min      = minimum freshness time in minutes
+# - percent  = freshness derived from Last-Modified age
+# - max      = absolute freshness ceiling in minutes
+# - options  = extra behaviors such as store-stale or ignore-no-store
+#
+# KEY OPTIONS USED HERE:
+# - store-stale      = may serve expired content if the origin is unavailable
+# - ignore-no-store   = ignore origin's no-store directive
+# - ignore-private    = ignore origin's private directive
+# - reload-into-ims   = convert a client reload into conditional validation
+#
+# TIMING REFERENCE:
+# 1 year   = 525600 minutes
+# 3 months = 129600 minutes
+# 1 month  = 43800 minutes
+# 1 week   = 10080 minutes
+# 1 day    = 1440 minutes
+# 4 hours  = 240 minutes
+#
+# ORDERING RULES:
+# 1) Never cache / always revalidate rules first
+# 2) Short-lived metadata and definitions next
+# 3) Long-lived vendor update rules after that
+# 4) Medium-lived general assets next
+# 5) Catch-all fallback must always be last
+#
+# ========================================================================
+
+# ------------------------------------------------------------------------
+# SECTION 1: DO NOT CACHE (MUST BE FIRST)
+# These rules cover content that is dynamic, user-specific, security-sensitive,
+# or otherwise unsuitable for reuse across clients.
+# ------------------------------------------------------------------------
+
+# Any CGI script or URL containing a query string is usually dynamic.
+# - /cgi-bin/   = classic dynamic script path used by many web servers
+# - \?          = query string indicator, often used for session state, tracking,
+#                 personalized content, or one-time request parameters
+# - 0 0% 0      = no freshness window at all; Squid should not treat it as fresh
+# This rule ensures the request is revalidated rather than blindly served from cache.
+refresh_pattern -i (/cgi-bin/|\?) 0 0% 0
+
+# CMS admin panels and login pages should never be cached.
+# - wp-admin, web-admin, admin.php, login.php are common authentication and
+#   administration entry points
+# - these pages may contain session tokens, permission checks, or user-specific data
+# - 0 0% 0 means Squid should always consider them stale immediately
+# This helps prevent accidental reuse of sensitive or per-user control pages.
+refresh_pattern -i (wp-admin|web-admin|admin\.php|login\.php) 0 0% 0
+
+# A short-lived "live_user" endpoint is allowed a limited cache window.
+# - 30         = minimum of 30 minutes fresh
+# - 60%        = freshness also scales with object age
+# - 300        = hard cap of 5 hours
+# This is useful for data that is updated frequently but does not need constant
+# revalidation on every request.
+refresh_pattern -i (live_user) 30 60% 300
+
+# Telemetry, analytics, pixels, tracking beacons, and similar measurement URLs
+# should not be cached.
+# - These requests are usually used for live reporting and accurate counting
+# - Caching them can distort statistics, break attribution, or hide real events
+# - 0 0% 0 forces Squid to treat them as immediately stale
+refresh_pattern -i (analytics|telemetry|beacon|pixel|metrics|tracking)\. 0 0% 0
+
+# Google advertising endpoints should not be cached.
+# - Advertising responses are often personalized, time-sensitive, and tracked
+# - Serving stale ad data can break delivery logic or misreport impressions
+# - 0 0% 0 ensures Squid always fetches a fresh response
+refresh_pattern -i (googleadservices|googlesyndication|doubleclick|adservice\.google) 0 0% 0
+
+# Microsoft telemetry and diagnostic endpoints should not be cached.
+# - These services are often used for live diagnostics, device health, and usage reporting
+# - Stale copies can interfere with device reporting or update-related workflows
+# - 0 0% 0 means no caching freshness is allowed
+refresh_pattern -i (telemetry\.microsoft|vortex\.data\.microsoft|watson\.telemetry|settings\.win\.microsoft|sqm\.users\.office|feedback\.microsoft) 0 0% 0
+
+# ------------------------------------------------------------------------
+# SECTION 2: SHORT CACHE (Metadata, AV definitions, repo lists)
+# These are small objects that change frequently and should be cached only
+# briefly to reduce repeated downloads while still staying current.
+# ------------------------------------------------------------------------
+
+# Linux repository metadata is highly reusable but changes often.
+# - The matched domains are major Linux mirror/update hosts
+# - The file types are metadata/index files, not the package payloads themselves
+# - 240        = at least 4 hours fresh
+# - 80%        = freshness also scales with Last-Modified age
+# - 1440       = hard maximum of 1 day
+# - store-stale = if the mirror is temporarily unreachable, a slightly stale
+#                 copy may still be served to keep package operations working
+refresh_pattern -i (archive\.ubuntu|security\.debian|mirror\.centos|dl\.fedoraproject|download\.opensuse)\.org/.*\.(gz|bz2|xml|xz|db|files|sig)(\?|$) 240 80% 1440 store-stale
+
+# Winget and Microsoft Store metadata should stay fairly fresh.
+# - These feeds control app listings, availability, and package metadata
+# - Short caching reduces repeated lookups while keeping app availability current
+# - 240/80%/1440 gives a balanced window for frequently updated catalog data
+refresh_pattern -i (storeedge\.fd\.dsp\.ms|storeedgefd\.azureedge\.net|dl\.delivery\.mp\.microsoft\.com) 240 80% 1440 store-stale
+
+# Malwarebytes definition files update frequently and should not be cached long.
+# - Definitions can change multiple times per day
+# - 1440 = 1 day minimum freshness
+# - 60%  = still respects file age, but more conservatively than many vendor rules
+# - 10080 = hard cap of 1 week
+# - store-stale helps avoid update failure when the vendor endpoint is unreachable
+refresh_pattern -i (mbamupdates\.com) 1440 60% 10080 store-stale
+
+# Symantec / Norton definition packages are frequently updated but still suitable
+# for short-term caching.
+# - definitions\.symantec\.com and liveupdate\.symantecliveupdate\.com are
+#   canonical update sources
+# - /.*\.(zip|exe)$ matches package archives and executable installers used for updates
+# - 1440 80% 10080 gives a 1-day minimum, age-based freshness, and 7-day max
+# - store-stale allows continued use if the update service is briefly unavailable
+refresh_pattern -i (definitions\.symantec\.com|liveupdate\.symantecliveupdate\.com)/.*\.(zip|exe)$ 1440 80% 10080 store-stale
+
+# ESET definition/version files are compact update artifacts.
+# - .nup and .ver represent definition data and version information
+# - short freshness is enough because these files are regularly replaced
+# - the 1-day minimum with a 7-day cap keeps updates efficient but not stale
+refresh_pattern -i (update\.eset\.com)/.*\.(nup|ver)$ 1440 80% 10080 store-stale
+
+# Sophos cloud lookup/update content is short-lived but repeatable.
+# - The broad /.* match covers update resources and lookup artifacts
+# - This is a practical rule for security content that is frequently refreshed
+# - 1440 80% 10080 keeps a short retention period with resilience via store-stale
+refresh_pattern -i (sophosxl\.net)/.* 1440 80% 10080 store-stale
+
+# Avast and AVG binary definition files can be cached briefly.
+# - .vpu and .bin are common update payload/definition formats
+# - These files are large enough to benefit from caching, but still change often
+# - 1 day min / 1 week max balances bandwidth savings with update freshness
+refresh_pattern -i (avast\.com|avg\.com)/.*\.(vpu|bin)$ 1440 80% 10080 store-stale
+
+# Windows Defender definition files should be cached short-term only.
+# - .vdm, .dat, and .bin are common definition or support file types
+# - Microsoft changes these regularly, so a short freshness window is safer
+# - store-stale helps when update endpoints are slow or temporarily unavailable
+refresh_pattern -i (wdcp\.microsoft\.com|go\.microsoft\.com/fwlink)/.*\.(vdm|dat|bin)(\?|$) 1440 80% 10080 store-stale
+
+# McAfee update payloads are suitable for short-term caching.
+# - .zip, .dat, and .gem are common update container or data formats
+# - 1 day minimum freshness avoids constant revalidation
+# - 1 week maximum prevents old definitions from lingering too long
+refresh_pattern -i (update\.mcafee\.com|download\.mcafee\.com)/.*\.(zip|dat|gem)(\?|$) 1440 80% 10080 store-stale
+
+# Bitdefender security updates are frequently refreshed, so they fit short cache rules.
+# - .exe, .zip, and .gz are common delivery formats for update packages
+# - The short cache window reduces repeated downloads without over-retaining content
+refresh_pattern -i (download\.bitdefender\.com|upgrade\.bitdefender\.com)/.*\.(exe|zip|gz)(\?|$) 1440 80% 10080 store-stale
+
+# Generic text/data filter lists can be cached briefly, but cautiously.
+# - This is a broad catch for ad-block lists, blocklists, and other text-based feeds
+# - It may also match unrelated .txt or .dat files, so placement and ordering matter
+# - 240 80% 1440 keeps them fresh enough without hammering the origin
+refresh_pattern -i \.(txt|dat)$ 240 80% 1440 store-stale
+
+# ------------------------------------------------------------------------
+# SECTION 3: VENDOR UPDATES (OS) — Long cache (1 Year)
+# These are stable release artifacts. Once published, they are usually immutable
+# and safe to cache very aggressively for bandwidth savings and performance.
+# ------------------------------------------------------------------------
+
+# Microsoft update payloads are ideal for long caching because they are usually
+# versioned, immutable once published, and widely requested by multiple clients.
+# - The domain group covers Windows Update, Office, Edge, delivery networks,
+#   and Microsoft CDN infrastructure
+# - The file extensions include installers, packages, catalog files, manifests,
+#   and metadata
+# - 525600 100% 525600 means a full year minimum freshness, 100% age trust, and
+#   a one-year hard cap
+# - store-stale improves resilience if Microsoft update sources are unavailable
+# - ignore-no-store / ignore-private override restrictive cache headers that
+#   are common on Microsoft delivery endpoints
+# - reload-into-ims improves hit rate by converting reloads into conditional checks
+refresh_pattern -i (windowsupdate|update\.microsoft|download\.microsoft|download\.windowsupdate|delivery\.mp\.microsoft|dl\.delivery\.mp\.microsoft|fe[0-9]\.delivery\.mp\.microsoft|officecdn\.microsoft|officecdn\.microsoftonline|officeclient\.officeapps\.live|akamaiedge|edgecastcdn|azureedge\.net|microsoftedge\.com)/.*\.(cab|exe|msi|msu|psf|zip|dat|mum|cat|manifest|xml|json) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Xbox Live assets are generally versioned delivery objects and can be cached long-term.
+# - .cab, .exe, .msi, and .zip are typical downloadable payload formats
+# - These are often reused across many clients and rarely change once released
+# - The long cache window reduces repeated large downloads
+refresh_pattern -i (dlassets\.xboxlive)\.com/.*\.(cab|exe|msi|zip)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Apple macOS and iOS update packages are usually immutable release artifacts.
+# - .pkg, .dmg, and .ipsw are large signed delivery formats
+# - Long caching saves major bandwidth because these packages are large and stable
+# - The restrictive cache-header overrides help retain useful copies for shared use
+refresh_pattern -i (swcdn\.apple|swdist\.apple)\.com/.*\.(pkg|dmg|ipsw)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Linux binary packages are excellent cache candidates when mirrored over HTTP.
+# - .deb and .rpm are packaged release files, typically immutable by version
+# - The long cache window is especially useful for repeated installs and updates
+# - Even though modern clients may use HTTPS, this still helps for plain HTTP mirrors
+refresh_pattern -i (archive\.ubuntu|security\.debian|mirror\.centos|dl\.fedoraproject|download\.opensuse)\.org/.*\.(deb|rpm)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Google Android / ChromeOS update payloads are generally versioned and stable.
+# - .zip, .img, .bin, .exe, and .dmg cover common release formats and installers
+# - These are often large and shared across multiple clients
+# - A full-year cache window is appropriate for immutable release objects
+refresh_pattern -i (dl\.google|dl-ssl\.google)\.com/.*\.(zip|img|bin|exe|dmg)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# ------------------------------------------------------------------------
+# SECTION 4: VENDOR UPDATES (Drivers)
+# Driver packages are usually release-based and can be cached for a long time.
+# ------------------------------------------------------------------------
+
+# NVIDIA driver packages are large and rarely change once published.
+# - .exe, .run, and .zip are common driver delivery formats
+# - Long caching avoids repeatedly downloading multi-hundred-megabyte installers
+# - ignore-no-store / ignore-private are used because vendor headers are often
+#   conservative even when the file itself is stable
+refresh_pattern -i (download\.nvidia\.com|international-gfe\.download\.nvidia\.com)/.*\.(exe|run|zip)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# AMD driver packages follow the same pattern as NVIDIA: versioned, stable, and large.
+# - .exe and .zip are the typical delivery formats
+# - A one-year cache policy is suitable for release artifacts
+refresh_pattern -i (drivers\.amd\.com|download\.amd\.com)/.*\.(exe|zip)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Intel driver and utility installers are also usually release-based objects.
+# - .exe, .zip, and .msi are all common package formats
+# - These files are worth caching long-term because they are large and reused often
+refresh_pattern -i (downloadcenter|downloadmirror)\.intel\.com/.*\.(exe|zip|msi)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# ------------------------------------------------------------------------
+# SECTION 5: VENDOR UPDATES (Software)
+# Many software installers are effectively immutable once released, so long
+# caching is appropriate and can dramatically reduce repeated downloads.
+# ------------------------------------------------------------------------
+
+# Adobe installers and update payloads are typically versioned release artifacts.
+# - The matched domains cover Adobe download infrastructure
+# - .exe, .dmg, .zip, and .dat cover installers and associated data files
+# - Long caching is appropriate because these are usually stable by version
+refresh_pattern -i (get|platformdl|fpdownload|ardownload[0-9])\.adobe\.com/.*\.(exe|dmg|zip|dat)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Oracle Java and related installers are versioned release files.
+# - .exe, .msi, and .tar.gz cover Windows, MSI, and archive-based distributions
+# - These files are large and generally immutable after publication
+refresh_pattern -i (download\.oracle\.com|javadl\.sun\.com)/.*\.(exe|msi|tar\.gz)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Mozilla installer packages are release-based and can be cached long-term.
+# - .exe, .msi, .dmg, and .pkg cover the main platform distributions
+# - These downloads are frequently repeated across many clients
+refresh_pattern -i (download-installer\.cdn\.mozilla\.net)/.*\.(exe|msi|dmg|pkg)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Chrome installers from Google are also versioned and safe to cache for a long time.
+# - .exe, .msi, .deb, and .rpm cover the common platform-specific installers
+# - Long retention helps avoid repeated downloads of the same release
+refresh_pattern -i (dl\.google\.com/chrome/install)/.*\.(exe|msi|deb|rpm)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# GitHub Releases and related CDN objects are often immutable by content or version.
+# - The releases/download path usually points to release artifacts
+# - objects.githubusercontent.com and github-releases.githubusercontent.com are
+#   commonly used for release payload distribution
+# - Long caching works well because release binaries are intended to be shared
+refresh_pattern -i (github\.com/.*/releases/download/|objects\.githubusercontent\.com/|github-releases\.githubusercontent\.com/) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Microsoft Store app packages are versioned application bundles.
+# - .msix, .appx, .msixbundle, .appxbundle, and .eappx are packaged app formats
+# - These are large and commonly reused across systems
+# - The long cache window fits release-style app delivery
+refresh_pattern -i (tlu\.dl\.delivery\.mp\.microsoft\.com|storeedge\.fd\.dsp\.ms|storeedgefd\.azureedge\.net|dl\.delivery\.mp\.microsoft\.com)/.*\.(msix|appx|msixbundle|appxbundle|eappx)(\?|$) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Microsoft Store display catalog data is metadata, not the app payload itself.
+# - It changes more often than the app binaries, so the cache window is shorter
+# - 1440 80% 10080 gives a one-day minimum and one-week maximum
+# - store-stale helps preserve service continuity if the catalog endpoint is slow
+refresh_pattern -i (displaycatalog\.md\.mp\.microsoft\.com)/.* 1440 80% 10080 store-stale
+
+# Docker image layers are content-addressed and usually immutable by hash.
+# - .tar, .gz, .layer, .manifest, and .json are common registry response formats
+# - 43800 = 1 month minimum freshness
+# - 100%  = fully trust Last-Modified age
+# - 129600 = 3 month maximum freshness
+# - store-stale + reload-into-ims improve reuse and reload behavior
+refresh_pattern -i (registry-1\.docker\.io|docker\.io|production\.cloud\.docker\.com)/.*\.(tar|gz|layer|manifest|json) 43800 100% 129600 store-stale reload-into-ims
+
+# JetBrains IDE installers are versioned release artifacts.
+# - .exe, .dmg, .tar.gz, and .zip cover the common distribution formats
+# - Long caching is appropriate because these installers do not change once released
+refresh_pattern -i (download\.jetbrains\.com|jetbrains\.com)/.*\.(exe|dmg|tar\.gz|zip) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Unity engine installers and packages are also release-based and large.
+# - .exe, .dmg, .pkg, and .zip are standard delivery formats
+# - Long caching avoids repeated downloads of the same installer version
+refresh_pattern -i (unity3d\.com|download\.unity3d\.com)/.*\.(exe|dmg|pkg|zip) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# ------------------------------------------------------------------------
+# SECTION 6: GAMING PLATFORMS
+# Game launchers and content delivery networks often host large, versioned,
+# content-addressed files that benefit from aggressive caching.
+# ------------------------------------------------------------------------
+
+# Steam web and content delivery endpoints.
+# - This broad rule targets Steam-hosted content that is typically versioned or static
+# - Long caching helps reduce repeated downloads of large game assets
+refresh_pattern -i "\.(steampowered|steamcontent)\.com/.*" 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Epic Games download assets are usually release artifacts and can be cached long-term.
+# - The Akamai CDN host is commonly used for large launcher or game payloads
+# - Long freshness is suitable for versioned downloads
+refresh_pattern -i (epicgames-download1\.akamaized\.net)/.* 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Additional Steam and Akamai-related CDN hosts.
+# - These domains often host game depots, manifests, patches, or launcher assets
+# - Long caching makes sense because the content is typically immutable by version/hash
+refresh_pattern -i (akamai\.net|steamstatic\.com|steamcdn-a\.akamaihd\.net|steam\.cdn\.on\.net|content\.steamguard\.com|steamusercontent\.com) 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Blizzard and Battle.net assets are usually release-based and can be cached strongly.
+# - Launcher data, installers, and patch content often change only by version
+refresh_pattern -i (blizzard|battle\.net)\.com/.* 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Origin / EA content delivery paths often host versioned game assets.
+# - These downloads are large and reused frequently across systems
+refresh_pattern -i (origin-content\.akamaized\.net|download\.dm\.origin\.com)/.* 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# Ubisoft download locations also serve release-based installers and game data.
+# - .cdn.ubi.com hosts are often versioned CDN endpoints
+refresh_pattern -i (download\.ubi\.com|static[0-9]+\.cdn\.ubi\.com)/.* 525600 100% 525600 store-stale ignore-no-store ignore-private reload-into-ims
+
+# ------------------------------------------------------------------------
+# SECTION 7: WEB ASSETS & LARGE FILES (Medium cache)
+# These are not as static as vendor installers, but they are still worth caching
+# because they are often large and frequently re-requested.
+# ------------------------------------------------------------------------
+
+# Google Fonts assets are highly reusable across many websites.
+# - fonts.gstatic.com / fonts.googleapis.com / fonts.google.com are standard font delivery hosts
+# - 1440 80% 10080 provides a moderate cache life suitable for web font stability
+# - store-stale improves page loading resilience if the font origin is unavailable
+refresh_pattern -i (fonts\.gstatic\.com|fonts\.googleapis\.com|fonts\.google\.com) 1440 80% 10080 store-stale
+
+# Large downloadable archive and installer files are good candidates for medium-long caching.
+# - .iso, .img, .dmg, .bin, .exe, .msi, and .msu are often large and versioned
+# - 43800 100% 129600 gives a month-long minimum and three-month max
+# - reload-into-ims helps preserve validation behavior on refresh
+refresh_pattern -i \.(iso|img|dmg|bin|exe|msi|msu)(\?|$) 43800 100% 129600 store-stale reload-into-ims
+
+# Compressed archive formats are often reusable and stable once published.
+# - .rar, .jar, .gz, .tgz, .tar, .bz2, .zip, and .7z cover common package/archive types
+# - The same medium-long cache policy is appropriate for versioned files
+refresh_pattern -i \.(rar|jar|gz|tgz|tar|bz2|zip|7z)(\?|$) 43800 100% 129600 store-stale reload-into-ims
+
+# Video files are large and rarely change after upload.
+# - Common container formats are matched here
+# - 43800 100% 129600 means 1 month minimum freshness and 3 months maximum
+# - store-stale allows playback to continue even if the origin is temporarily unreachable
+refresh_pattern -i \.(mp4|mkv|flv|mov|avi|mpeg|webm)(\?|$) 43800 100% 129600 store-stale
+
+# Audio files are similarly large and generally immutable once published.
+# - These are common media formats with strong reuse potential
+refresh_pattern -i \.(mp3|wav|ogg|flac|aac)(\?|$) 43800 100% 129600 store-stale
+
+# Image files are highly cacheable because the same file is often requested repeatedly.
+# - Covers mainstream raster and vector formats
+# - The long cache window reduces origin load and speeds repeated loads
+refresh_pattern -i \.(png|jpe?g|gif|webp|bmp|ico|svg|tiff)(\?|$) 43800 100% 129600 store-stale
+
+# Font files are good cache candidates because font assets are usually versioned and stable.
+# - .woff and .woff2 are the main web font formats, with older desktop font types included too
+# - 85% is slightly more conservative than 100% because font files can be republished
+refresh_pattern -i \.(woff2?|ttf|otf|eot)(\?|$) 43800 85% 129600 store-stale
+
+# Office and document formats are typically versioned and often reused.
+# - .pdf, .doc/.docx, .xls/.xlsx, and .ppt/.pptx cover common office documents
+# - 10080 = 1 week minimum freshness
+# - 90%   = moderate reliance on Last-Modified age
+# - 43200 = 30 day max freshness
+refresh_pattern -i \.(pdf|docx?|xlsx?|pptx?)(\?|$) 10080 90% 43200 store-stale
+
+# CSS files change more often than images or fonts, but can still benefit from caching.
+# - 10080 = 1 week minimum freshness
+# - 80%   = respects content age while avoiding excessive revalidation
+# - 43800 = 1 month hard cap
+refresh_pattern -i \.(css)(\?|$) 10080 80% 43800 store-stale
+
+# JavaScript files are more volatile than CSS, so the cache window is shorter.
+# - 1440 = 1 day minimum freshness
+# - 80%  = age-based freshness still applies
+# - 10080 = 1 week cap keeps stale script risk lower
+refresh_pattern -i \.(js)(\?|$) 1440 80% 10080 store-stale
+
+# HTML and XML are usually dynamic or semi-dynamic, so keep the cache short.
+# - 360 = 6 hours minimum freshness
+# - 80% = some age-based reuse, but not too much
+# - 1440 = 1 day max, which keeps pages relatively current
+refresh_pattern -i \.(xml|html|htm)(\?|$) 360 80% 1440 store-stale
+
+# ------------------------------------------------------------------------
+# SECTION 8: FALLBACK (DEFAULT) — MUST BE LAST
+# This final rule catches anything not matched above.
+# It should be broad and conservative because it is the safety net for the
+# entire policy.
+# ------------------------------------------------------------------------
+
+# Catch-all fallback for all remaining URLs.
+# - .      = match anything
+# - 0      = no minimum freshness window
+# - 20%    = use age-based freshness conservatively
+# - 4320   = 3 day maximum
+# - store-stale = allows serving expired objects if origin is unavailable
+# This keeps Squid useful for unclassified content without making overly risky
+# caching assumptions.
+refresh_pattern . 0 20% 4320 store-stale
+
+# ======================= END OF CONFIGURATION =========================
